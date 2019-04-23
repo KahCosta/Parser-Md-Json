@@ -44,12 +44,12 @@ class ContentParser:
     def get_stories_from_file(self, lines=None):
         stories_dict = {}
         for i in range(len(lines)):
-            if '#' in lines[i]:
-                stories_name = lines[i].split('*')[1]
+            if '*' in lines[i]:
+                stories_name = lines[i].split()[1]
                 i += 1
                 stories_examples = []
-                while i+1 < len(lines) and '*' not in lines[i+1]:
-                    stories_examples.append(lines[i].strip('-').strip())
+                while i < len(lines) and '*' not in lines[i] and lines[i] != '\n':
+                    stories_examples.append(lines[i].strip('-').strip()[2:])
                     i += 1
                 stories_dict[stories_name] = stories_examples
         return stories_dict
@@ -67,9 +67,9 @@ class ContentParser:
 
 
     def format_json(self, all_stories):
-        data = {'rasa_nlu_data': {'commom_examples': []}}
+        data = {'rasa_nlu_data': {'stories_examples': []}}
         stories = self.format_stories_to_json(all_stories)
-        data['rasa_nlu_data']['commom_examples'] = stories
+        data['rasa_nlu_data']['stories_examples'] = stories
         return data
 
     def generate_json_file(self, all_stories=None):
